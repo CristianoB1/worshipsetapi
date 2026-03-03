@@ -1,45 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Musica } from './musica.entity/musica.entity';
 
 @Injectable()
 export class MusicasService {
 
-  private musicas = [
-    {
-      id: 1,
-      nome: 'Nome da Música',
-      tom: 'G',
-      bpm: 120,
-      categoria: 'Adoração',
-      link: 'LINK_AQUI',
-      duracao: '4:00'
-    },
-    {
-      id: 2,
-      nome: 'Nome da Música',
-      tom: 'A',
-      bpm: 130,
-      categoria: 'Celebração',
-      link: 'LINK_AQUI',
-      duracao: '3:30'
-    }
-  ];
+  constructor(
+    @InjectRepository(Musica)
+    private musicaRepository: Repository<Musica>,
+  ) {}
 
   findAll() {
-    return this.musicas;
+    return this.musicaRepository.find();
   }
 
-  create(musica: any) {
-    const novaMusica = {
-      id: Date.now(),
-      ...musica
-    };
-
-    this.musicas.push(novaMusica);
-    return novaMusica;
+  create(musica: Partial<Musica>) {
+    const nova = this.musicaRepository.create(musica);
+    return this.musicaRepository.save(nova);
   }
 
-  remove(id: number) {
-    this.musicas = this.musicas.filter(m => m.id !== id);
+  async remove(id: number) {
+    await this.musicaRepository.delete(id);
     return { message: 'Música removida' };
   }
 }

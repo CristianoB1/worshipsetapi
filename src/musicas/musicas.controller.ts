@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
 import { MusicasService } from './musicas.service';
+import { Musica } from './musica.entity/musica.entity';
 
 @Controller('musicas')
 export class MusicasController {
@@ -12,7 +13,7 @@ export class MusicasController {
   }
 
   @Post()
-  create(@Body() body: any) {
+  create(@Body() body: Partial<Musica>) {
     return this.musicasService.create(body);
   }
 
